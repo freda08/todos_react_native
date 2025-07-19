@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { Fab, FabLabel } from "@/components/ui/fab";
+import { View } from "react-native";
 
 export default function Index() {
   return (
@@ -9,7 +10,16 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Fab
+        size="md"
+        placement="bottom right"
+        isHovered={false}
+        isDisabled={false}
+        isPressed={false}
+      >
+        
+        <FabLabel>Quick start</FabLabel>
+      </Fab>
     </View>
   );
 }
