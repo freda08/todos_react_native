@@ -1,7 +1,13 @@
-import { Fab, FabLabel } from "@/components/ui/fab";
-import { View } from "react-native";
+import { Fab, FabIcon } from "@/components/ui/fab";
+import { AddIcon } from "@/components/ui/icon";
+import { useRouter } from "expo-router";
+import { Text, View } from "react-native";
 
 export default function Index() {
+  const router = useRouter();
+
+
+
   return (
     <View
       style={{
@@ -10,15 +16,17 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+
+      <Text>ddddddddd</Text>
       <Fab
-        size="md"
+        size="lg"
         placement="bottom right"
         isHovered={false}
         isDisabled={false}
         isPressed={false}
+        onPress={() => router.navigate('/add-todo')}
       >
-        
-        <FabLabel>Quick start</FabLabel>
+        <FabIcon as={AddIcon} />
       </Fab>
     </View>
   );
