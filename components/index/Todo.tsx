@@ -9,20 +9,15 @@ import {
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon } from "@/components/ui/button";
-import {
-    Checkbox,
-    CheckboxIcon,
-    CheckboxIndicator,
-    CheckboxLabel,
-} from "@/components/ui/checkbox";
 import { HStack } from "@/components/ui/hstack";
-import { ArrowRightIcon, CheckIcon, CloseIcon, Icon, ThreeDotsIcon } from "@/components/ui/icon";
+import { ArrowRightIcon, CloseIcon, Icon, ThreeDotsIcon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { Link, useRouter } from "expo-router";
+import { useState } from "react";
 
-export default function Todo({ item, onDeleteTodo }) {
+export default function Todo({ item, onDeleteTodo, changeStatus }) {
     const router = useRouter();
-    const [showActionsheet, setShowActionsheet] = React.useState(false)
+    const [showActionsheet, setShowActionsheet] = useState(false)
     const handleClose = () => setShowActionsheet(false)
 
     return (
@@ -32,20 +27,10 @@ export default function Todo({ item, onDeleteTodo }) {
             <HStack space="md">
                 <Box style={{ flex: 1 }}>
                     <HStack space="md">
-                        <Checkbox size="md" isInvalid={false} isDisabled={false}>
-                            <CheckboxIndicator>
-                                <CheckboxIcon as={CheckIcon} />
-                            </CheckboxIndicator>
-                            <CheckboxLabel>
-                                <Box>
-                                    <Text className="text-black-900 text-wrap" size="md">{item.name}</Text>
-                                    <Text className="text-black-900" size="xs">{item.date}</Text>
-                                </Box>
-
-                            </CheckboxLabel>
-                        </Checkbox>
-
-
+                        <Box>
+                            <Text className="text-black-900 text-wrap" size="md">{item.name}</Text>
+                            <Text className="text-black-900" size="xs">{item.date}</Text>
+                        </Box>
                     </HStack>
                 </Box>
 
@@ -70,20 +55,14 @@ export default function Todo({ item, onDeleteTodo }) {
                             <ActionsheetDragIndicatorWrapper>
                                 <ActionsheetDragIndicator />
                             </ActionsheetDragIndicatorWrapper>
-                            <ActionsheetItem onPress={handleClose}>
-                                <ActionsheetItemText>Edit Message</ActionsheetItemText>
+                            <ActionsheetItem onPress={() => changeStatus(item.id, "cancel")}>
+                                <ActionsheetItemText>Mark Cancel</ActionsheetItemText>
                             </ActionsheetItem>
-                            <ActionsheetItem onPress={handleClose}>
-                                <ActionsheetItemText>Mark Unread</ActionsheetItemText>
+                            <ActionsheetItem onPress={() => changeStatus(item.id, "completed")}>
+                                <ActionsheetItemText>Mark Completed</ActionsheetItemText>
                             </ActionsheetItem>
-                            <ActionsheetItem onPress={handleClose}>
-                                <ActionsheetItemText>Remind Me</ActionsheetItemText>
-                            </ActionsheetItem>
-                            <ActionsheetItem onPress={handleClose}>
-                                <ActionsheetItemText>Add to Saved Items</ActionsheetItemText>
-                            </ActionsheetItem>
-                            <ActionsheetItem isDisabled onPress={handleClose}>
-                                <ActionsheetItemText>Delete</ActionsheetItemText>
+                            <ActionsheetItem onPress={() => changeStatus(item.id, "in progress")}>
+                                <ActionsheetItemText>Mark In progress</ActionsheetItemText>
                             </ActionsheetItem>
                         </ActionsheetContent>
                     </Actionsheet>
@@ -94,7 +73,7 @@ export default function Todo({ item, onDeleteTodo }) {
                         <ButtonIcon as={CloseIcon} size="xl" />
                     </Button>
 
-                    <Link href={`todo/{item.id}`}>
+                    <Link href={`todo/${item.id}`}>
                         <Icon as={ArrowRightIcon} size="xl" />
                     </Link>
 

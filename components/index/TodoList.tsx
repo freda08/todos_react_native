@@ -139,6 +139,19 @@ export default function TodoList() {
         await AsyncStorage.setItem('@data', jsonValue);
     }
 
+    const changeStatus = async (id: int, status: string) => {
+        const savedData = await AsyncStorage.getItem('@data');
+        const parsedSavedData = JSON.parse(savedData);
+        let index = parsedSavedData.findIndex(el => el.id === id);
+
+        parsedSavedData[index].status = status;
+
+        setData(parsedSavedData);
+
+        const jsonValue = JSON.stringify(parsedSavedData);
+        await AsyncStorage.setItem('@data', jsonValue);
+    }
+
     return (
         <ScrollView
             style={{
@@ -150,25 +163,25 @@ export default function TodoList() {
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">Backlog</Text>
             {
                 data.filter(item => item.status === 'backlog').map(item => (
-                    <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+                    <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">In progress</Text>
             {
                 data.filter(item => item.status === 'in progress').map(item => (
-                    <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+                    <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">Completed</Text>
             {
                 data.filter(item => item.status === 'completed').map(item => (
-                    <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+                    <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">Cancel</Text>
             {
                 data.filter(item => item.status === 'cancel').map(item => (
-                    <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+                    <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
                 ))
             }
         </ScrollView>
