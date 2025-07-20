@@ -1,15 +1,20 @@
 import { Text } from "@/components/ui/text";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView } from 'react-native';
 import Todo from "./Todo";
 
+
+
 export default function TodoList() {
     const router = useRouter();
     const [data, setData] = useState([])
+    const isFocused = useIsFocused();
 
     useEffect(() => {
+        console.log('-------------')
         const loadData = async () => {
             try {
                 const todoList = [
@@ -102,18 +107,35 @@ export default function TodoList() {
         loadData();
     }, [])
 
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+
+                if (isFocused) {
+                    const savedData = await AsyncStorage.getItem('@data');
+                    if (savedData !== null) {
+                        setData(JSON.parse(savedData));
+                    }
+                }
+            } catch (error) {
+                console.error('Error', error);
+            }
+        };
+
+        loadData();
+
+    }, [isFocused]);
+
     const onDeleteTodo = async (id: int) => {
         const savedData = await AsyncStorage.getItem('@data');
         const parsedSavedData = JSON.parse(savedData);
         let index = parsedSavedData.findIndex(el => el.id === id);
-        console.log('newData',index)
 
         parsedSavedData.splice(index, 1);
 
         setData(parsedSavedData);
 
         const jsonValue = JSON.stringify(parsedSavedData);
-        // console.log('newData', newData)
         await AsyncStorage.setItem('@data', jsonValue);
     }
 
@@ -132,19 +154,19 @@ export default function TodoList() {
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">In progress</Text>
-                        {
+            {
                 data.filter(item => item.status === 'in progress').map(item => (
                     <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">Completed</Text>
-              {
+            {
                 data.filter(item => item.status === 'completed').map(item => (
                     <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
                 ))
             }
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">Cancel</Text>
-              {
+            {
                 data.filter(item => item.status === 'cancel').map(item => (
                     <Todo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
                 ))

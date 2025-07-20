@@ -1,3 +1,12 @@
+import {
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
+    ActionsheetItemText
+} from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import {
@@ -13,9 +22,10 @@ import { Link, useRouter } from "expo-router";
 
 export default function Todo({ item, onDeleteTodo }) {
     const router = useRouter();
+    const [showActionsheet, setShowActionsheet] = React.useState(false)
+    const handleClose = () => setShowActionsheet(false)
 
     return (
-
         <Box
             className="bg-gray-200 rounded-lg p-6 mb-3 mt-3 mr-6 ml-4"
         >
@@ -28,7 +38,7 @@ export default function Todo({ item, onDeleteTodo }) {
                             </CheckboxIndicator>
                             <CheckboxLabel>
                                 <Box>
-                                    <Text className="text-black-900" size="md">{item.name}</Text>
+                                    <Text className="text-black-900 text-wrap" size="md">{item.name}</Text>
                                     <Text className="text-black-900" size="xs">{item.date}</Text>
                                 </Box>
 
@@ -51,11 +61,36 @@ export default function Todo({ item, onDeleteTodo }) {
 
 
 
-                    <Button size="xl" action="secondary" className="ml-4 p-4">
+                    <Button size="sm" action="secondary" className="p-2" onPress={() => setShowActionsheet(true)}>
                         <ButtonIcon as={ThreeDotsIcon} size="xl" />
                     </Button>
+                    <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
+                        <ActionsheetBackdrop />
+                        <ActionsheetContent>
+                            <ActionsheetDragIndicatorWrapper>
+                                <ActionsheetDragIndicator />
+                            </ActionsheetDragIndicatorWrapper>
+                            <ActionsheetItem onPress={handleClose}>
+                                <ActionsheetItemText>Edit Message</ActionsheetItemText>
+                            </ActionsheetItem>
+                            <ActionsheetItem onPress={handleClose}>
+                                <ActionsheetItemText>Mark Unread</ActionsheetItemText>
+                            </ActionsheetItem>
+                            <ActionsheetItem onPress={handleClose}>
+                                <ActionsheetItemText>Remind Me</ActionsheetItemText>
+                            </ActionsheetItem>
+                            <ActionsheetItem onPress={handleClose}>
+                                <ActionsheetItemText>Add to Saved Items</ActionsheetItemText>
+                            </ActionsheetItem>
+                            <ActionsheetItem isDisabled onPress={handleClose}>
+                                <ActionsheetItemText>Delete</ActionsheetItemText>
+                            </ActionsheetItem>
+                        </ActionsheetContent>
+                    </Actionsheet>
 
-                    <Button onPress={() => onDeleteTodo(item.id)} size="xl" action="negative" className="p-4 mr-4">
+
+
+                    <Button onPress={() => onDeleteTodo(item.id)} size="sm" action="negative" className="p-2">
                         <ButtonIcon as={CloseIcon} size="xl" />
                     </Button>
 
