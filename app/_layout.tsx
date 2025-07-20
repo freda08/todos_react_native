@@ -5,10 +5,9 @@ import "@/global.css";
 
 
 export default function RootLayout() {
-  return <GluestackUIProvider mode="light">
-    
-    <Stack />
-
-    
-    </GluestackUIProvider>;
+    return (
+        <GluestackUIProvider mode="light">
+            <Stack />
+        </GluestackUIProvider>
+    );
 }
