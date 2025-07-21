@@ -171,11 +171,27 @@ export default function TodoList() {
         return groupedData;
     };
 
-    const changeSort = (val) => {
+    const changeSort = (val: string) => {
         console.log(val, data);
-        for (key in data) {
-            console.log(data, key)
-        }
+        const sortedData = Object.fromEntries(
+            Object.entries(data).map(([status, tasks]) => [
+                status,
+                tasks.sort((a: TTodo, b: TTodo): number => {
+                    const parseDate = (dateString: string) => {
+                        const [month, day, year] = dateString.split('/').map(Number);
+                        return new Date(year, month - 1, day);
+                    };
+
+                    if (val === 'older') {
+                        return Number(parseDate(a.date)) - Number(parseDate(b.date));
+                    }
+
+                    return Number(parseDate(b.date)) - Number(parseDate(a.date));
+
+                })
+            ])
+        );
+        setData(sortedData);
     };
 
     const arrStatus = [
@@ -191,10 +207,10 @@ export default function TodoList() {
                 flex: 1
             }}
         >
-            <Select className="p-3" onValueChange={changeSort}>
+            <Select className="p-4" onValueChange={changeSort}>
                 <SelectTrigger variant="outline" size="xl">
                     <SelectInput placeholder="Sort by date" />
-                    <SelectIcon  as={ChevronDownIcon} />
+                    <SelectIcon as={ChevronDownIcon} />
                 </SelectTrigger>
                 <SelectPortal>
                     <SelectBackdrop />
