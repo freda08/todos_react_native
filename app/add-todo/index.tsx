@@ -1,10 +1,16 @@
 import { Button, ButtonText } from "@/components/ui/button";
 import {
     FormControl,
+    FormControlError,
+    FormControlErrorIcon,
+    FormControlErrorText,
+    FormControlHelper,
+    FormControlHelperText,
     FormControlLabel,
     FormControlLabelText
 } from "@/components/ui/form-control";
 import { HStack } from "@/components/ui/hstack";
+import { AlertCircleIcon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
@@ -26,7 +32,9 @@ export default function Index() {
     const [decsription, setDecsription] = useState("");
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
-    const toast = useToast();    
+    const [isInvalidName, setIsInvalidName] = useState(false)
+
+    const toast = useToast();
 
     const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined): void => {
         const currentDate = selectedDate || date; // Use selectedDate or current date if none selected
@@ -47,20 +55,25 @@ export default function Index() {
             status: 'backlog',
             id: undefined
         };
+        if (name.length === 0) {
+            setIsInvalidName(true);
+        } else {
+            setIsInvalidName(false);
+            const savedData = await AsyncStorage.getItem('@data');
 
-        const savedData = await AsyncStorage.getItem('@data');
+            if (savedData !== null) {
+                const parsedSavedData = JSON.parse(savedData);
 
-        if (savedData !== null) {
-            const parsedSavedData = JSON.parse(savedData);
+                newTodo.id = parsedSavedData.pop().id + 1;
 
-            newTodo.id = parsedSavedData.pop().id + 1;
+                parsedSavedData.push(newTodo)
+                const jsonValue = JSON.stringify(parsedSavedData);
 
-            parsedSavedData.push(newTodo)
-            const jsonValue = JSON.stringify(parsedSavedData);
-
-            await AsyncStorage.setItem('@data', jsonValue);
-            showNewToast();
+                await AsyncStorage.setItem('@data', jsonValue);
+                showNewToast();
+            }
         }
+
     };
 
     const showDatepicker = () => {
@@ -138,6 +151,7 @@ export default function Index() {
 
 
                 <FormControl
+                    isInvalid={isInvalidName}
                     size="md"
                     isDisabled={false}
                     isReadOnly={false}
@@ -153,6 +167,18 @@ export default function Index() {
                             onChangeText={(text) => setName(text)}
                         />
                     </Input>
+
+                    <FormControlHelper>
+                        <FormControlHelperText>
+                            Must be at least 1 character.
+                        </FormControlHelperText>
+                    </FormControlHelper>
+                    <FormControlError>
+                        <FormControlErrorIcon as={AlertCircleIcon} />
+                        <FormControlErrorText>
+                            At least 1 character are required.
+                        </FormControlErrorText>
+                    </FormControlError>
                 </FormControl>
 
                 <FormControl
@@ -192,6 +218,7 @@ export default function Index() {
                     >
                         <TextareaInput onChangeText={(text) => setDecsription(text)} placeholder="Your text goes here..." />
                     </Textarea>
+
                 </FormControl>
 
 
