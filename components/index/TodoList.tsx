@@ -172,7 +172,6 @@ export default function TodoList() {
     };
 
     const changeSort = (val: string) => {
-        console.log(val, data);
         const sortedData = Object.fromEntries(
             Object.entries(data).map(([status, tasks]) => [
                 status,
