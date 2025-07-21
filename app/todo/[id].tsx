@@ -1,6 +1,7 @@
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
+import { TodoStatus, TTodo } from "@/types/TTodo";
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from "react";
@@ -9,15 +10,24 @@ import { ScrollView } from 'react-native';
 export default function Todo() {
     const { getItem, setItem } = useAsyncStorage('@data');
     const { id } = useLocalSearchParams();
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState<TTodo>({
+        id: 0,
+        name:  '',
+        location:  '',
+        description: '',
+        status:  TodoStatus.BACKLOG,
+        date:  '',
+    });
 
     const readItemFromStorage = async () => {
         const todos = await getItem();
-        const parsedSavedData = JSON.parse(todos);
 
+        if (todos !== null) {
+            const parsedSavedData = JSON.parse(todos);
 
-        const item = parsedSavedData.filter(el => el.id == id);
-        setValue(item[0]);
+            const item = parsedSavedData.filter((el: TTodo) => el.id === Number(id));
+            setValue(item[0]);
+        }
     };
 
     useEffect(() => {

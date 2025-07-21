@@ -12,10 +12,17 @@ import { Button, ButtonIcon } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { ArrowRightIcon, CloseIcon, Icon, ThreeDotsIcon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
+import { TTodo } from "@/types/TTodo";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 
-export default function Todo({ item, onDeleteTodo, changeStatus }) {
+type TodoProps = {
+    item: TTodo,
+    changeStatus: (id: number, name: string) => void,
+    onDeleteTodo: (id: number) => void
+};
+
+export default function Todo({ item, onDeleteTodo, changeStatus }: TodoProps) {
     const router = useRouter();
     const [showActionsheet, setShowActionsheet] = useState(false)
     const handleClose = () => setShowActionsheet(false)
@@ -73,7 +80,12 @@ export default function Todo({ item, onDeleteTodo, changeStatus }) {
                         <ButtonIcon as={CloseIcon} size="xl" />
                     </Button>
 
-                    <Link href={`todo/${item.id}`}>
+                    <Link
+                        href={{
+                            pathname: '/todo/[id]',
+                            params: { id: item.id }
+                        }}
+                    >
                         <Icon as={ArrowRightIcon} size="xl" />
                     </Link>
 

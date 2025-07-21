@@ -13,7 +13,7 @@ import { View } from "react-native";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Platform } from 'react-native';
 
 export default function Index() {
@@ -21,20 +21,19 @@ export default function Index() {
     const [location, setLocation] = useState("");
     const [decsription, setDecsription] = useState("");
     const [date, setDate] = useState(new Date());
-
     const [showPicker, setShowPicker] = useState(false);
 
-    const onChange = (event, selectedDate) => {
+    const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) : void => {
         const currentDate = selectedDate || date; // Use selectedDate or current date if none selected
+
         if (Platform.OS === 'ios') {
             setShowPicker(false); // Hide picker on iOS after selection
         }
+
         setDate(currentDate);
     };
 
     const handleSubmit = async () => {
-        // console.log(formatDateTime(date), name, location, decsription)
-        
         const newTodo = {
             name,
             location,
@@ -46,40 +45,34 @@ export default function Index() {
 
         const savedData = await AsyncStorage.getItem('@data');
 
+        if (savedData !== null) {
+            const parsedSavedData = JSON.parse(savedData);
 
-        const parsedSavedData = JSON.parse(savedData);
+            newTodo.id = parsedSavedData.pop().id + 1;
 
-        newTodo.id = parsedSavedData.pop().id + 1;
+            parsedSavedData.push(newTodo)
+            const jsonValue = JSON.stringify(parsedSavedData);
 
-        parsedSavedData.push(newTodo)
-        const jsonValue = JSON.stringify(parsedSavedData);
-
-        await AsyncStorage.setItem('@data', jsonValue);
-    
-
+            await AsyncStorage.setItem('@data', jsonValue);
+        }
     };
 
-    const showMode = (currentMode) => {
+    const showDatepicker = () => {
         if (Platform.OS === 'android') {
             // Imperative API for Android
             DateTimePickerAndroid.open({
                 value: date,
                 onChange,
-                mode: currentMode,
+                mode: 'date',
                 is24Hour: true, // Optional: for 24-hour time format
             });
         } else {
             // Component-based for iOS/Windows
             setShowPicker(true);
-            setMode(currentMode);
         }
     };
 
-    const showDatepicker = () => {
-        showMode('date');
-    };
-
-    const formatDateTime = (dateObj) => {
+    const formatDateTime = (dateObj: Date) : string => {
         return dateObj.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
@@ -170,23 +163,17 @@ export default function Index() {
                         isReadOnly={false}
                         isInvalid={false}
                         isDisabled={false}
-                        
+
                     >
                         <TextareaInput onChangeText={(text) => setDecsription(text)} placeholder="Your text goes here..." />
                     </Textarea>
                 </FormControl>
 
 
-
                 <Button className="w-full self-end mt-4" size="xl" onPress={handleSubmit}>
                     <ButtonText>Submit</ButtonText>
                 </Button>
-
-
-
-
             </VStack>
-
         </View>
     );
 }
