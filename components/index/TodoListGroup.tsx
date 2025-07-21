@@ -9,15 +9,18 @@ type TodoListGroupProps = {
     onDeleteTodo: (id: number) => void
 };
 
-export default function TodoListGroup({data, title, onDeleteTodo, changeStatus}: TodoListGroupProps) {
+export default function TodoListGroup({ data, title, onDeleteTodo, changeStatus }: TodoListGroupProps) {
 
     return (
         <>
             <Text size="2xl" className="mb-3 mt-3 mr-6 ml-4">{title}</Text>
             {
-                data.map((item: TTodo) => (
-                    <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
-                ))
+                data.length !== 0
+                    ? data.map((item: TTodo) => (
+                        <Todo onDeleteTodo={onDeleteTodo} changeStatus={changeStatus} key={item.id} item={item} />
+                    ))
+                    : <Text className="mb-3 mt-3 mr-6 ml-4">No data</Text>
+
             }
         </>
     );

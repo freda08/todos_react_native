@@ -6,20 +6,13 @@ import { View } from "react-native";
 
 export default function Index() {
     return (
-        <View
-            style={{
-                flex: 1
-            }}
-        >
+        <View style={{ flex: 1 }}>
             <TodoList />
 
             <Link
-                href={{
-                    pathname: '/add-todo'
-                }}
+                href="/add-todo"
                 asChild
             >
-
                 <Fab
                     className="mb-12 mr-6"
                     size="lg"

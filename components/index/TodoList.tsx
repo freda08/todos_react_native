@@ -92,12 +92,16 @@ export default function TodoList() {
 
     const readTodosFromStorage = async () => {
         try {
-            const jsonValue = JSON.stringify(todoList);
-            await setItem(jsonValue);
+            const existedData = await getItem();
 
-            const savedData = await getItem();
-            if (savedData !== null) {
-                setData(groupByStatus(JSON.parse(savedData)));
+            if (existedData === null) {
+                const jsonValue = JSON.stringify(todoList);
+                await setItem(jsonValue);
+
+                const savedData = await getItem();
+                if (savedData !== null) {
+                    setData(groupByStatus(JSON.parse(savedData)));
+                }
             }
         } catch (error) {
             console.error('Error', error);
@@ -133,7 +137,7 @@ export default function TodoList() {
             let index = parsedSavedData.findIndex((el: TTodo) => el.id === id);
 
             parsedSavedData.splice(index, 1);
-
+            
             setData(groupByStatus(parsedSavedData));
 
             const jsonValue = JSON.stringify(parsedSavedData);
@@ -158,16 +162,17 @@ export default function TodoList() {
     }
 
     const groupByStatus = (data: TTodo[]): Record<string, TTodo[]> => {
+        
         const groupedData = data.reduce((groups: Record<string, TTodo[]>, task: TTodo): Record<string, TTodo[]> => {
             const { status } = task;
-            if (!groups[status]) {
-                groups[status] = [];
-            }
-
             groups[status].push(task);
             return groups;
-        }, {});
-
+        }, {
+            "backlog": [],
+            "in progress": [],
+            "completed": [],
+            "cancel": []
+        });
         return groupedData;
     };
 

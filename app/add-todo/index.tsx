@@ -26,7 +26,7 @@ import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@rea
 import { useState } from "react";
 import { Platform, View } from "react-native";
 
-export default function Index() {
+export default function AddTodo() {
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
     const [decsription, setDecsription] = useState("");
