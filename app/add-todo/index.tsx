@@ -8,6 +8,12 @@ import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import {
+    Toast,
+    ToastDescription,
+    ToastTitle,
+    useToast,
+} from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -20,8 +26,9 @@ export default function Index() {
     const [decsription, setDecsription] = useState("");
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
+    const toast = useToast();    
 
-    const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) : void => {
+    const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined): void => {
         const currentDate = selectedDate || date; // Use selectedDate or current date if none selected
 
         if (Platform.OS === 'ios') {
@@ -52,6 +59,7 @@ export default function Index() {
             const jsonValue = JSON.stringify(parsedSavedData);
 
             await AsyncStorage.setItem('@data', jsonValue);
+            showNewToast();
         }
     };
 
@@ -70,7 +78,7 @@ export default function Index() {
         }
     };
 
-    const formatDateTime = (dateObj: Date) : string => {
+    const formatDateTime = (dateObj: Date): string => {
         return dateObj.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
@@ -78,6 +86,25 @@ export default function Index() {
             hour12: true
         });
     };
+
+    const showNewToast = () => {
+        toast.show({
+            id: String(Math.random()),
+            placement: "bottom",
+            duration: 3000,
+            render: ({ id }) => {
+                const uniqueToastId = "toast-" + id
+                return (
+                    <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+                        <ToastTitle>Success!</ToastTitle>
+                        <ToastDescription>
+                            The task was saved.
+                        </ToastDescription>
+                    </Toast>
+                )
+            },
+        })
+    }
 
     return (
         <View

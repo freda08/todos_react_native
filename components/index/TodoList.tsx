@@ -1,3 +1,16 @@
+import { ChevronDownIcon } from "@/components/ui/icon";
+import {
+    Select,
+    SelectBackdrop,
+    SelectContent,
+    SelectDragIndicator,
+    SelectDragIndicatorWrapper,
+    SelectIcon,
+    SelectInput,
+    SelectItem,
+    SelectPortal,
+    SelectTrigger,
+} from "@/components/ui/select";
 import { Text } from "@/components/ui/text";
 import { TodoStatus, TTodo } from "@/types/TTodo";
 import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
@@ -158,6 +171,13 @@ export default function TodoList() {
         return groupedData;
     };
 
+    const changeSort = (val) => {
+        console.log(val, data);
+        for (key in data) {
+            console.log(data, key)
+        }
+    };
+
     const arrStatus = [
         TodoStatus.BACKLOG,
         TodoStatus.IN_PROGRESS,
@@ -171,10 +191,28 @@ export default function TodoList() {
                 flex: 1
             }}
         >
+            <Select className="p-3" onValueChange={changeSort}>
+                <SelectTrigger variant="outline" size="xl">
+                    <SelectInput placeholder="Sort by date" />
+                    <SelectIcon  as={ChevronDownIcon} />
+                </SelectTrigger>
+                <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                        <SelectDragIndicatorWrapper>
+                            <SelectDragIndicator />
+                        </SelectDragIndicatorWrapper>
+                        <SelectItem label="newer" value="newer" />
+                        <SelectItem label="older" value="older" />
+                    </SelectContent>
+                </SelectPortal>
+            </Select>
+
             {
                 Object.keys(data).length !== 0
                     ? arrStatus.map((el: TodoStatus) => {
                         return <TodoListGroup
+                            key={el}
                             title={el}
                             data={data[el]}
                             onDeleteTodo={onDeleteTodo}
