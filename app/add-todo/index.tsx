@@ -4,17 +4,15 @@ import {
     FormControlLabel,
     FormControlLabelText
 } from "@/components/ui/form-control";
+import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
+import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { VStack } from "@/components/ui/vstack";
-import { useState } from "react";
-import { View } from "react-native";
-
-import { HStack } from "@/components/ui/hstack";
-import { Text } from "@/components/ui/text";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Platform } from 'react-native';
+import { useState } from "react";
+import { Platform, View } from "react-native";
 
 export default function Index() {
     const [name, setName] = useState("");
